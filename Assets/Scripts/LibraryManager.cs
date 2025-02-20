@@ -1,160 +1,166 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
+using static Scatter.Helpers.LibraryHelper;
+using static Scatter.Helpers.PointerHelper;
 
 public class LibraryManager : MonoBehaviour
 {
+    [HideInInspector] public static LibraryManager Instance { get; private set; }
+
     [Header("Library UI")]
     public GameObject contentPanel;
     public Button[] categoryButtons;
+
     [Header("Library Objects")]
     public Image imageObject;
     public LibraryCategory[] libraryCategories;
-    public static LibraryManager Instance { get; private set; }
+
     [Header("Library Variables")]
     [SerializeField] private int _selectedCategory = -1;
+
     [Header("Mode Variables")]
     public PointerMode currentPointerMode;
-    public PointerButton[] pointerButtons;
+    [SerializeField] private PointerButton[] _pointerButtons;
 
 
+    // Awake is called when the script instance is being loaded
     void Awake()
     {
-        ReloadLibraryDisplay();
         Instance = this;
+        RefreshLibraryContent();
     }
 
     // Update is called once per frame
     void Update()
     {
+        HandleInput();
+    }
+
+    private void HandleInput()
+    {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            ChangePointerMode("Move");
+            ChangePointerMode(PointerMode.Move);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            ChangePointerMode("Rotate");
+            ChangePointerMode(PointerMode.Rotate);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            ChangePointerMode("Scale");
+            ChangePointerMode(PointerMode.Scale);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            ChangePointerMode("Erase");
+            ChangePointerMode(PointerMode.Erase);
         }
     }
 
+    #region Pointer Mode Management
+
+    public event EventHandler OnPointerModeChanged;
+
+    //Used in unity UI/Events
     public void ChangePointerMode(string newMode)
     {
         currentPointerMode = StringToPointerMode(newMode);
+        RefreshPointerButtons();
+
+        OnPointerModeChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    //Used in code
+    public void ChangePointerMode(PointerMode newMode)
+    {
+        currentPointerMode = newMode;
+        RefreshPointerButtons();
+
+        OnPointerModeChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void RefreshPointerButtons()
+    {
         foreach (PointerMode mode in Enum.GetValues(typeof(PointerMode)))
         {
             if (mode.Equals(PointerMode.Place)) continue;
             GetPointerButton(mode).interactable = !currentPointerMode.Equals(mode);
         }
-        OnPointerModeChanged?.Invoke(this, EventArgs.Empty);
     }
-
-    public event EventHandler OnPointerModeChanged;
 
     private Button GetPointerButton(PointerMode mode)
     {
-        return pointerButtons.First(x => x.pointerMode.Equals(mode)).button;
+        return _pointerButtons.First(x => x.pointerMode.Equals(mode)).button;
     }
 
-    public void CreateObject(GameObject prefab, Sprite sprite)
-    {
-        Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        currentMousePosition.z = 0;
+    #endregion
 
-        //Create new object at mouse position
-        GameObject newObject = Instantiate(prefab, currentMousePosition, new Quaternion(0, 0, 0, 0));
-        newObject.GetComponent<SpriteRenderer>().sprite = sprite;
-        List<Vector2> spriteVertices = new List<Vector2>();
-        sprite.GetPhysicsShape(0, spriteVertices);
-        newObject.GetComponent<PolygonCollider2D>().points = spriteVertices.ToArray();
+    #region Category Management
+    private void RefreshLibraryContent()
+    {
+        //Remove all objects from the content panel
+        foreach (Transform child in contentPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        //Instantiate objects in selected category (if selected)
+        if (!_selectedCategory.Equals(-1))
+        {
+            InstantiateLibraryButtons(libraryCategories[_selectedCategory]);
+            return;
+        }
+
+        //Instantiate objects in all categories (if none selected)
+        foreach (LibraryCategory libraryCategory in libraryCategories)
+        {
+            InstantiateLibraryButtons(libraryCategory);
+        }
+
     }
 
     public void OnSelectCategory(int category)
     {
         _selectedCategory = category;
+
+        //Enable all buttons, then disable the selected one and reload the 
         foreach (var button in categoryButtons)
         {
             button.interactable = true;
         }
         categoryButtons[_selectedCategory + 1].interactable = false;
-        ReloadLibraryDisplay();
+        RefreshLibraryContent();
     }
 
-    private void ReloadLibraryDisplay()
+    public void InstantiateLibraryButtons(LibraryCategory libraryCategory)
     {
-        foreach (Transform child in contentPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
-        if (!_selectedCategory.Equals(-1))
-        {
-            InstantiateObjectsInCategory(libraryCategories[_selectedCategory]);
-            return;
-        }
-
-        foreach (LibraryCategory libraryCategory in libraryCategories)
-        {
-            InstantiateObjectsInCategory(libraryCategory);
-        }
-
-    }
-
-    public void InstantiateObjectsInCategory(LibraryCategory libraryCategory)
-    {
+        //Loop through all objects in the category and create a button for them
         foreach (LibraryObject libraryObject in libraryCategory.libraryObjects)
         {
             imageObject.sprite = libraryObject.sprite;
+
             GameObject newObject = Instantiate(imageObject.gameObject);
-            newObject.GetComponent<SelectableObject>().prefab = libraryObject.prefab;
-            newObject.GetComponent<SelectableObject>().sprite = libraryObject.sprite;
+            newObject.GetComponent<CanvasDraggable>().playerObjectPrefab = libraryObject.prefab;
+            newObject.GetComponent<CanvasDraggable>().playerObjectSprite = libraryObject.sprite;
+
             newObject.transform.SetParent(contentPanel.transform, false);
         }
     }
 
-    private PointerMode StringToPointerMode(string mode)
+    public void InstantiatePlayerObject(GameObject prefab, Sprite sprite)
     {
-        return (PointerMode)Enum.Parse(typeof(PointerMode), mode);
-    }
+        //Create new object at mouse position
+        Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        currentMousePosition.z = 0;
+        GameObject newObject = Instantiate(prefab, currentMousePosition, new Quaternion(0, 0, 0, 0));
 
-    [Serializable]
-    public struct PointerButton
-    {
-        public PointerMode pointerMode;
-        public Button button;
+        //Fit collider to sprite vertices
+        newObject.GetComponent<SpriteRenderer>().sprite = sprite;
+        List<Vector2> spriteVertices = new List<Vector2>();
+        sprite.GetPhysicsShape(0, spriteVertices);
+        newObject.GetComponent<PolygonCollider2D>().points = spriteVertices.ToArray();
     }
+    #endregion
 
-    //Structs for Library Objects
-    [Serializable]
-    public struct LibraryCategory
-    {
-        public string name;
-        public LibraryObject[] libraryObjects;
-    }
-    [Serializable]
-    public struct LibraryObject
-    {
-        public string name;
-        public Sprite sprite;
-        public GameObject prefab;
-    }
-
-    [Serializable]
-    public enum PointerMode
-    {
-        Place,
-        Move,
-        Scale,
-        Rotate,
-        Erase
-    }
 }

@@ -748,7 +748,7 @@ MonoBehaviour:
       prefab: {fileID: 5977740396037578187, guid: 024842aa7df662740a23b3a054e2407e, type: 3}
   _selectedCategory: -1
   currentPointerMode: 0
-  pointerButtons:
+  _pointerButtons:
   - pointerMode: 1
     button: {fileID: 303614144}
   - pointerMode: 3
@@ -2427,8 +2427,7 @@ MonoBehaviour:
   _zoomSpeed: 0.3
   _minZoom: 2
   _maxZoom: 20
-  startMousePosition: {x: 0, y: 0, z: 0}
-  isDragging: 0
+  _startMousePosition: {x: 0, y: 0, z: 0}
 --- !u!4 &625815402
 Transform:
   m_ObjectHideFlags: 0
@@ -4063,11 +4062,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c37893bd49ece34eb111e860b50d33a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  libraryParent: {fileID: 1709874765}
-  libraryPanel: {fileID: 1470537746}
-  image: {fileID: 493470740}
-  offset: -600
-  isHidden: 1
+  _libraryParent: {fileID: 1709874765}
+  _libraryPanel: {fileID: 1470537746}
+  _buttonImage: {fileID: 493470740}
+  _XOffset: -600
+  _isHidden: 1
 --- !u!114 &1033277881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78729,7 +78728,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1111587394, guid: f93ed719374c7ac41aac21af457274b4, type: 3}
+  m_Sprite: {fileID: -664796052, guid: f93ed719374c7ac41aac21af457274b4, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -79588,7 +79587,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1709874765}
   m_Layer: 5
-  m_Name: Object Library
+  m_Name: Object Library Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

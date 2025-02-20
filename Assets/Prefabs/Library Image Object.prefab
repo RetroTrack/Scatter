@@ -171,6 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cee6aa315cfabb340bb6fd785dcddf4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  sprite: {fileID: 0}
-  dragObject: {fileID: 812420324240259799, guid: 72604673600e9d24bb925edcc733acec, type: 3}
+  playerObjectPrefab: {fileID: 5977740396037578187, guid: 024842aa7df662740a23b3a054e2407e, type: 3}
+  playerObjectSprite: {fileID: 0}
+  _canvasPrefab: {fileID: 812420324240259799, guid: 72604673600e9d24bb925edcc733acec, type: 3}

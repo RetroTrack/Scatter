@@ -3,6 +3,8 @@ using UnityEngine.Tilemaps;
 
 public class CameraController : MonoBehaviour
 {
+    [HideInInspector] public static CameraController Instance { get; private set; }
+
     [Header("Camera Movement")]
     public bool canMoveMouse = true;
     public bool canMoveKeyboard = true;
@@ -15,55 +17,59 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float _minZoom = 2f;
     [SerializeField] private float _maxZoom = 20f;
 
-    public Vector3 startMousePosition;
-    public bool isDragging;
+    public Vector3 _startMousePosition;
+    private bool _isDragging = false;
 
     private Camera _camera;
-    [HideInInspector] public static CameraController Instance { get; private set; }
 
+    // Awake is called when the script instance is being loaded
     void Awake()
     {
         Instance = this;
         _camera = Camera.main;
     }
 
+    // Update is called once per frame
     void Update()
     {
         _camera = Camera.main;
+
         if (canMoveKeyboard)
         {
             MoveCameraKeyboard();
             ZoomCameraKeyboard();
         }
 
-        //Check if pointer isn't over UI and if mouse movement is enabled
+        //Check if mouse movement is enabled and if pointer isn't over UI 
         if (canMoveMouse && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
             MoveCameraMouse();
             ZoomCameraMouse();
         }
 
+        //Make sure camera stays within bounds of tilemap
         LimitCamera();
     }
 
+    #region Movement
     private void MoveCameraMouse()
     {
 
         //Mouse Dragging
         if (Input.GetMouseButtonDown(1))
         {
-            startMousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-            isDragging = true;
+            _startMousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+            _isDragging = true;
         }
         if (Input.GetMouseButtonUp(1))
         {
-            isDragging = false;
+            _isDragging = false;
         }
 
-        if (isDragging && Input.GetMouseButton(1))
+        if (_isDragging && Input.GetMouseButton(1))
         {
             Vector3 currentMousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 offset = startMousePosition - currentMousePosition;
+            Vector3 offset = _startMousePosition - currentMousePosition;
             offset.z = 0;
             _camera.transform.position += offset;
         }
@@ -72,14 +78,16 @@ public class CameraController : MonoBehaviour
     private void MoveCameraKeyboard()
     {
         //Keyboard Movement
-        if (!isDragging)
+        if (!_isDragging)
         {
             Vector3 moveDirection = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
             _camera.transform.position += moveDirection * _movementSpeed * Time.deltaTime * 100;
         }
 
     }
+    #endregion
 
+    #region Zooming
     private void ZoomCameraKeyboard()
     {
 
@@ -120,6 +128,9 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Limiting
     private void LimitCamera()
     {
         if (_tilemap == null) return;
@@ -135,4 +146,5 @@ public class CameraController : MonoBehaviour
 
         _camera.transform.position = clampedPosition;
     }
+    #endregion
 }
