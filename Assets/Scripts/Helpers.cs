@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,8 +7,20 @@ namespace Scatter.Helpers
 {
     public class LibraryHelper
     {
+        #region Methods
+
+        public static void GenerateSpriteCollider(Sprite sprite, GameObject newObject)
+        {
+            //Fit collider to sprite vertices
+            newObject.GetComponent<SpriteRenderer>().sprite = sprite;
+            List<Vector2> spriteVertices = new List<Vector2>();
+            sprite.GetPhysicsShape(0, spriteVertices);
+            newObject.GetComponent<PolygonCollider2D>().points = spriteVertices.ToArray();
+        }
+
+        #endregion
+
         #region Structs and Enums
-        //Structs for Library Objects
         [Serializable]
         public struct LibraryCategory
         {
