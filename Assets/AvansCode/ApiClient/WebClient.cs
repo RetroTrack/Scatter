@@ -6,16 +6,9 @@ using UnityEngine.Networking;
 
 public class WebClient : MonoBehaviour
 {
-    public static WebClient Instance { get; private set; }
     public string baseUrl;
     private string token;
 
-    // Awake is called when the script instance is being loaded
-    private void Awake()
-    {
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
 
     public void SetToken(string token)
     {
