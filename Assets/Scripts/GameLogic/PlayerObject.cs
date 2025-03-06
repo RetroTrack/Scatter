@@ -8,6 +8,10 @@ namespace Scatter.World
 {
     public class PlayerObject : MonoBehaviour
     {
+        public string ObjectId;
+        public string PrefabId;
+        public Sprite Sprite;
+
         public float scaleFactor = 1;
         [SerializeField] private Vector2 _scaleLimits = new Vector2(0.4f, 5f);
 
@@ -25,6 +29,19 @@ namespace Scatter.World
 
             HandleObjectInteraction();
         }
+
+        [ContextMenu("Player Object/Prefab Id from name")]
+        public void GetPrefabId()
+        {
+            PrefabId = gameObject.name;
+        }
+
+        [ContextMenu("Player Object/Get sprite")]
+        public void GetSprite()
+        {
+            Sprite = GetComponent<SpriteRenderer>().sprite;
+        }
+
 
         #region Object Manipulation
 
@@ -103,6 +120,7 @@ namespace Scatter.World
             {
                 GetComponent<SpriteRenderer>().DOKill();
                 LibraryManager.Instance.OnPointerModeChanged -= OnPointerModeChange;
+                EnvironmentObjectHandler.Instance.AddDestroyed(this);
                 Destroy(gameObject);
                 return;
             }

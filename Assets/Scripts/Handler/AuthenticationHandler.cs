@@ -28,7 +28,7 @@ public class AuthenticationHandler : MonoBehaviour
         switch (webRequestResponse)
         {
             case WebRequestData<string>:
-                ApiManager.LoadScene("Login");
+                SceneLoader.LoadScene("Login");
                 break;
             case WebRequestError:
                 SetErrorText("Email address already exists!");
@@ -45,7 +45,7 @@ public class AuthenticationHandler : MonoBehaviour
         switch (webRequestResponse)
         {
             case WebRequestData<string>:
-                ApiManager.LoadScene("MainMenu");
+                SceneLoader.LoadScene("MainMenu");
                 break;
             case WebRequestError:
                 SetErrorText("Email or password incorrect!");

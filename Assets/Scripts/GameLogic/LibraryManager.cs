@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Scatter.Canvas;
+using Scatter.World;
 using UnityEngine;
 using UnityEngine.UI;
 using static Scatter.Helpers.LibraryHelper;
@@ -100,6 +102,10 @@ namespace Scatter.Library
         #endregion
 
         #region Category Management
+
+        
+
+
         private void RefreshLibraryContent()
         {
             //Remove all objects from the content panel
@@ -138,25 +144,45 @@ namespace Scatter.Library
         public void InstantiateLibraryButtons(LibraryCategory libraryCategory)
         {
             //Loop through all objects in the category and create a button for them
-            foreach (LibraryObject libraryObject in libraryCategory.libraryObjects)
+            foreach (PlayerObject playerObject in libraryCategory.playerObjects)
             {
-                imageObject.sprite = libraryObject.sprite;
+                imageObject.sprite = playerObject.Sprite;
 
                 GameObject newObject = Instantiate(imageObject.gameObject);
-                newObject.GetComponent<CanvasDraggable>().playerObjectPrefab = libraryObject.prefab;
-                newObject.GetComponent<CanvasDraggable>().playerObjectSprite = libraryObject.sprite;
+                newObject.GetComponent<CanvasDraggable>().playerObject = playerObject;
 
                 newObject.transform.SetParent(contentPanel.transform, false);
             }
         }
 
-        public void InstantiatePlayerObject(GameObject prefab, Sprite sprite)
+        public List<PlayerObject> GetAllObjects()
         {
-            //Create new object at mouse position
-            Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            currentMousePosition.z = 0;
-            GameObject newObject = Instantiate(prefab, currentMousePosition, new Quaternion(0, 0, 0, 0));
-            GenerateSpriteCollider(sprite, newObject);
+            List<PlayerObject> playerObjects = new List<PlayerObject>();
+            foreach (LibraryCategory libraryCategory in libraryCategories)
+            {
+                playerObjects.AddRange(libraryCategory.playerObjects);
+            }
+            return playerObjects;
+        }
+
+        public GameObject InstantiatePlayerObject(PlayerObject playerObject, bool atMousePointer = true)
+        {
+            GameObject newObject;
+            if (atMousePointer)
+            {
+                //Create new object at mouse position
+                Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                currentMousePosition.z = 0;
+                newObject = Instantiate(playerObject.gameObject, currentMousePosition, new Quaternion(0, 0, 0, 0));
+            }
+            else
+            {
+                newObject = Instantiate(playerObject.gameObject, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
+            }
+            GenerateSpriteCollider(newObject);
+            Debug.Log("Instantiated object with name: " + newObject.name);
+            EnvironmentObjectHandler.Instance.AddPlayerObject(newObject.GetComponent<PlayerObject>());
+            return newObject;
         }
 
         #endregion

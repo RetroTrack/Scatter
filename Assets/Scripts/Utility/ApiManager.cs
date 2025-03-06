@@ -8,6 +8,11 @@ public class ApiManager : MonoBehaviour
     public static ApiManager Instance { get; private set; }
     public UserApiClient userApiClient;
     public Environment2DApiClient environment2DApiClient;
+    public Object2DApiClient object2DApiClient;
+
+    [Header("Variables")]
+    public Environment2D currentEnvironment;
+    public bool shouldEnvironmentBeLoaded = false;
 
     // Awake is called when the script instance is being loaded
     private void Awake()
@@ -18,16 +23,17 @@ public class ApiManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-
-    public static void LoadScene(string name)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        SceneManager.LoadScene(name);
-    }
-
-    public static void Quit()
-    {
-        Application.Quit();
+        if(scene.name.Equals("Game") && currentEnvironment != null && shouldEnvironmentBeLoaded)
+        {
+            EnvironmentObjectHandler.Instance.SetEnvironment(currentEnvironment);
+            EnvironmentObjectHandler.Instance.LoadObjectsInEnvironment();
+            shouldEnvironmentBeLoaded = false;
+        }
     }
 }

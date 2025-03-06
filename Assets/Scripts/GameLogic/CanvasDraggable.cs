@@ -1,4 +1,6 @@
+using Scatter.Helpers;
 using Scatter.Library;
+using Scatter.World;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,8 +9,7 @@ namespace Scatter.Canvas
 {
     public class CanvasDraggable : MonoBehaviour
     {
-        public GameObject playerObjectPrefab;
-        public Sprite playerObjectSprite;
+        public PlayerObject playerObject;
         [SerializeField] private GameObject _canvasPrefab;
         private Image image;
         private GameObject dragInstance;
@@ -52,7 +53,7 @@ namespace Scatter.Canvas
             dragInstance = Instantiate(_canvasPrefab);
             dragInstance.transform.SetParent(transform.root);
             Image dragImage = dragInstance.GetComponent<Image>();
-            dragImage.sprite = playerObjectSprite;
+            dragImage.sprite = playerObject.Sprite;
             dragImage.raycastTarget = false;
         }
 
@@ -60,7 +61,7 @@ namespace Scatter.Canvas
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
-                LibraryManager.Instance.InstantiatePlayerObject(playerObjectPrefab, playerObjectSprite);
+                LibraryManager.Instance.InstantiatePlayerObject(playerObject);
             }
             Destroy(dragInstance);
         }

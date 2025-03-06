@@ -1,10 +1,12 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class EnvironmentCreationHandler : MonoBehaviour
 {
     public Environment2D environment2D;
-
+    public TMP_InputField heightInput;
+    public TMP_InputField lengthInput;
 
     public void SetEnvironmentName(string name)
     {
@@ -12,11 +14,45 @@ public class EnvironmentCreationHandler : MonoBehaviour
     }
     public void SetEnvironmentHeight(string height)
     {
+        if (string.IsNullOrWhiteSpace(height))
+        {
+            heightInput.text = "0";
+            environment2D.maxHeight = 10;
+            return;
+        }
+
         environment2D.maxHeight = int.Parse(height);
+
+        if (environment2D.maxHeight > 100)
+        {
+            environment2D.maxHeight = 100;
+            heightInput.text = "100";
+        }
+        else if (environment2D.maxHeight < 10)
+        {
+            environment2D.maxHeight = 10;
+        }
     }
     public void SetEnvironmentLength(string length)
     {
+        if (string.IsNullOrWhiteSpace(length))
+        {
+            lengthInput.text = "0";
+            environment2D.maxHeight = 20;
+            return;
+        }
+
         environment2D.maxLength = int.Parse(length);
+
+        if (environment2D.maxLength > 200)
+        {
+            environment2D.maxLength = 200;
+            lengthInput.text = "200";
+        }
+        else if (environment2D.maxLength < 20)
+        {
+            environment2D.maxLength = 20;
+        }
     }
 
     public async void CreateEnvironment2D()
@@ -27,7 +63,7 @@ public class EnvironmentCreationHandler : MonoBehaviour
         {
             case WebRequestData<Environment2D> dataResponse:
                 environment2D.id = dataResponse.Data.id;
-                // TODO: Handle succes scenario.
+                SceneLoader.LoadScene("Worlds");
                 break;
             case WebRequestError errorResponse:
                 string errorMessage = errorResponse.ErrorMessage;

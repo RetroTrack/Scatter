@@ -101,3 +101,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   userApiClient: {fileID: 5082269129097711349}
+  environment2DApiClient: {fileID: 2890065483692187962}
+  object2DApiClient: {fileID: 4444595817058466622}
+  currentEnvironment:
+    id: 
+    name: 
+    maxLength: 0
+    maxHeight: 0
+  shouldEnvironmentBeLoaded: 0
