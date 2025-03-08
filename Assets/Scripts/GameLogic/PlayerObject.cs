@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using Scatter.Library;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static Scatter.Helpers.PointerHelper;
 
 namespace Scatter.World
@@ -49,6 +50,7 @@ namespace Scatter.World
         {
             Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             currentMousePosition.z = 0;
+
 
             switch (LibraryManager.Instance.currentPointerMode)
             {
@@ -115,6 +117,8 @@ namespace Scatter.World
         //Runs when the mouse is clicked on the object
         public void OnMouseUpAsButton()
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
             //If the pointer is in erase mode, the object will be deleted
             if (LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Erase))
             {
@@ -134,7 +138,6 @@ namespace Scatter.World
 
             //If the pointer is in any other mode, selection status will be inverted
             _isSelected = !_isSelected;
-
         }
         #endregion
 

@@ -11,17 +11,33 @@ namespace Scatter.World
         public bool canMoveKeyboard = true;
         [SerializeField] private float _movementSpeed = 0.2f;
 
-        [SerializeField] private Tilemap _tilemap;
 
         [Header("Camera Zoom")]
         [SerializeField] private float _zoomSpeed = 1f;
         [SerializeField] private float _minZoom = 2f;
         [SerializeField] private float _maxZoom = 20f;
 
+        [Header("Camera Bounds")]
+
+        public Vector2 MaxBound { get; private set; } = new(200, 100);
+        public Vector2 MinBound { get; private set; } = new(-200, -100);
+
+
+
         public Vector3 _startMousePosition;
         private bool _isDragging = false;
 
         private Camera _camera;
+
+        public void ChangeEnvironmentSize(Vector2 size)
+        {
+            MaxBound = size;
+            MinBound = -size;
+            if(size.y < size.x * 0.6f)
+                _maxZoom = size.y / 2;
+            else
+                _maxZoom = size.x / 4;
+        }
 
         // Awake is called when the script instance is being loaded
         void Awake()
@@ -136,11 +152,10 @@ namespace Scatter.World
         #region Limiting
         private void LimitCamera()
         {
-            if (_tilemap == null) return;
             // Get camera size and tilemap bounds
-            Vector3 cameraSize = new Vector3(_camera.orthographicSize * _camera.aspect, _camera.orthographicSize, 0);
-            Vector3 minPosition = _tilemap.localBounds.min + cameraSize;
-            Vector3 maxPosition = _tilemap.localBounds.max - cameraSize;
+            Vector2 cameraSize = new Vector2(_camera.orthographicSize * _camera.aspect, _camera.orthographicSize);
+            Vector2 minPosition = MinBound + cameraSize;
+            Vector2 maxPosition = MaxBound - cameraSize;
 
             // Clamp camera view between tilemap bounds
             Vector3 clampedPosition = _camera.transform.position;
