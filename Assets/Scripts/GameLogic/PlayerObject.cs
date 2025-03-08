@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using Scatter.Library;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static Scatter.Helpers.PointerHelper;
 
 namespace Scatter.World
@@ -49,6 +50,7 @@ namespace Scatter.World
         {
             Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             currentMousePosition.z = 0;
+
 
             switch (LibraryManager.Instance.currentPointerMode)
             {
@@ -133,8 +135,9 @@ namespace Scatter.World
             }
 
             //If the pointer is in any other mode, selection status will be inverted
-            _isSelected = !_isSelected;
 
+            if (!EventSystem.current.IsPointerOverGameObject())
+                _isSelected = !_isSelected;
         }
         #endregion
 

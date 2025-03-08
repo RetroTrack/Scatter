@@ -20,6 +20,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
     public void SetEnvironment(Environment2D environment)
     {
         environment2D = environment;
+        CameraController.Instance.ChangeEnvironmentSize(new Vector2(environment.maxLength, environment.maxHeight));
     }
 
     public async void LoadObjectsInEnvironment()
