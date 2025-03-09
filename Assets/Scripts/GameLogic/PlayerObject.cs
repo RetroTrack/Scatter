@@ -128,9 +128,13 @@ namespace Scatter.World
                 Destroy(gameObject);
                 return;
             }
+            if(LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Click))
+            {
+                transform.DOShakeScale(0.2f, 0.1f, 10, 90);
+            }
 
             //If the pointer is in place mode, the object will always be deselected
-            if (LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Place))
+            if (LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Place) || LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Click))
             {
                 _isSelected = false;
                 return;

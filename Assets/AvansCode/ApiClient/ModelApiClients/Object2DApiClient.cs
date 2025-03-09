@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
 
 public class Object2DApiClient : MonoBehaviour

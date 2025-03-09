@@ -8,9 +8,11 @@ using UnityEngine;
 public class EnvironmentObjectHandler : MonoBehaviour
 {
     public static EnvironmentObjectHandler Instance { get; private set; }
-    [SerializeField] private Environment2D environment2D;
+    [SerializeField] private Environment2D _environment2D;
     public List<PlayerObject> loadedPlayerObjects = new();
-    [SerializeField] private List<string> deletedObjects = new();
+    [SerializeField] private List<string> _deletedObjects = new();
+    [SerializeField] private GameObject _rightPanel;
+    [SerializeField] private GameObject _saveButton;
 
     public void Awake()
     {
@@ -19,14 +21,20 @@ public class EnvironmentObjectHandler : MonoBehaviour
 
     public void SetEnvironment(Environment2D environment)
     {
-        environment2D = environment;
+        _environment2D = environment;
         CameraController.Instance.ChangeEnvironmentSize(new Vector2(environment.maxLength, environment.maxHeight));
+    }
+
+    public void DisablePersonalFunctions()
+    {
+        _rightPanel.SetActive(false);
+        _saveButton.SetActive(false);
     }
 
     public async void LoadObjectsInEnvironment()
     {
         //Request objects from database
-        List<Object2D> object2Ds = await ReadObject2Ds(environment2D);
+        List<Object2D> object2Ds = await ReadObject2Ds(_environment2D);
 
         if (object2Ds == null)
         {
@@ -44,34 +52,34 @@ public class EnvironmentObjectHandler : MonoBehaviour
         {
             if (string.IsNullOrEmpty(playerObject.ObjectId))
             {
-                Object2D object2D = ObjectHelper.ConvertPlayerObjectToObject2D(environment2D, playerObject);
-                object2D.environmentId = environment2D.id;
+                Object2D object2D = ObjectHelper.ConvertPlayerObjectToObject2D(_environment2D, playerObject);
+                object2D.environmentId = _environment2D.id;
                 string objectId = await CreateObject2D(object2D);
                 playerObject.ObjectId = objectId;
             }
             else
             {
-                Object2D object2D = ObjectHelper.ConvertPlayerObjectToObject2D(environment2D, playerObject);
+                Object2D object2D = ObjectHelper.ConvertPlayerObjectToObject2D(_environment2D, playerObject);
                 await UpdateObject2D(object2D);
             }
         }
 
         //Delete all objects that are marked for deletion
-        foreach (string objectId in deletedObjects)
+        foreach (string objectId in _deletedObjects)
         {
             Object2D object2D = new Object2D();
             object2D.id = objectId;
-            object2D.environmentId = environment2D.id;
+            object2D.environmentId = _environment2D.id;
             await DeleteObject2D(object2D);
         }
-        deletedObjects.Clear();
+        _deletedObjects.Clear();
     }
 
     public void AddDestroyed(PlayerObject playerObject)
     {
         if (!string.IsNullOrEmpty(playerObject.ObjectId))
         {
-            deletedObjects.Add(playerObject.ObjectId);
+            _deletedObjects.Add(playerObject.ObjectId);
         }
         loadedPlayerObjects.Remove(playerObject);
     }
@@ -92,7 +100,9 @@ public class EnvironmentObjectHandler : MonoBehaviour
             Debug.Log("Environment id is null or empty!");
             return null;
         }
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.object2DApiClient.ReadObject2Ds(environment.id);
+        IWebRequestReponse webRequestResponse = ApiManager.Instance.isCurrentEnvironmentShared ?
+            await ApiManager.Instance.guestApiClient.ReadObject2Ds(environment.id)
+            : await ApiManager.Instance.object2DApiClient.ReadObject2Ds(environment.id);
 
         switch (webRequestResponse)
         {

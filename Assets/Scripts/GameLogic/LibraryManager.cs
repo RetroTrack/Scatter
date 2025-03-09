@@ -26,9 +26,11 @@ namespace Scatter.Library
         [SerializeField] private int _selectedCategory = -1;
 
         [Header("Mode Variables")]
-        public PointerMode currentPointerMode;
+        public PointerMode currentPointerMode = PointerMode.Click;
         [SerializeField] private PointerButton[] _pointerButtons;
 
+        [Header("Smoke Effect")]
+        [SerializeField] private GameObject _smokeEffect;
 
         // Awake is called when the script instance is being loaded
         void Awake()
@@ -174,6 +176,8 @@ namespace Scatter.Library
                 Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 currentMousePosition.z = 0;
                 newObject = Instantiate(playerObject.gameObject, currentMousePosition, new Quaternion(0, 0, 0, 0));
+                var smokeEffect = Instantiate(_smokeEffect, currentMousePosition, new Quaternion(0, 0, 0, 0));
+                smokeEffect.GetComponent<SmokeEffect>().SetSprite(playerObject.Sprite);
             }
             else
             {

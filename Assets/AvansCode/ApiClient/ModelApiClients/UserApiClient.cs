@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
 
 public class UserApiClient : MonoBehaviour

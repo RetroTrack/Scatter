@@ -9,9 +9,11 @@ public class ApiManager : MonoBehaviour
     public UserApiClient userApiClient;
     public Environment2DApiClient environment2DApiClient;
     public Object2DApiClient object2DApiClient;
+    public GuestApiClient guestApiClient;
 
     [Header("Variables")]
     public Environment2D currentEnvironment;
+    public bool isCurrentEnvironmentShared = false;
     public bool shouldEnvironmentBeLoaded = false;
 
     // Awake is called when the script instance is being loaded
@@ -33,6 +35,8 @@ public class ApiManager : MonoBehaviour
         {
             EnvironmentObjectHandler.Instance.SetEnvironment(currentEnvironment);
             EnvironmentObjectHandler.Instance.LoadObjectsInEnvironment();
+            if(isCurrentEnvironmentShared) 
+                EnvironmentObjectHandler.Instance.DisablePersonalFunctions();
             shouldEnvironmentBeLoaded = false;
         }
     }

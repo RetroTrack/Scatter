@@ -56,7 +56,8 @@ namespace Scatter.Helpers
             Move,
             Scale,
             Rotate,
-            Erase
+            Erase,
+            Click
         }
         #endregion
     }

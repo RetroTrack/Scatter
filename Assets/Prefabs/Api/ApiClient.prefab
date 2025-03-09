@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5082269129097711349}
   - component: {fileID: 2890065483692187962}
   - component: {fileID: 4444595817058466622}
+  - component: {fileID: 6447878890434327049}
   - component: {fileID: 5084974728704085794}
   m_Layer: 0
   m_Name: ApiClient
@@ -88,6 +89,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   webClient: {fileID: 4360362040482848337}
+--- !u!114 &6447878890434327049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 106717169078542437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8fe48ab71c762941a328d7116ba9b78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  webClient: {fileID: 4360362040482848337}
 --- !u!114 &5084974728704085794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,6 +117,7 @@ MonoBehaviour:
   userApiClient: {fileID: 5082269129097711349}
   environment2DApiClient: {fileID: 2890065483692187962}
   object2DApiClient: {fileID: 4444595817058466622}
+  guestApiClient: {fileID: 6447878890434327049}
   currentEnvironment:
     id: 
     name: 
