@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 /**
  * Bijzonderheden wegens beperkingen van JsonUtility:

@@ -101,8 +101,8 @@ public class EnvironmentObjectHandler : MonoBehaviour
             return null;
         }
         IWebRequestReponse webRequestResponse = ApiManager.Instance.isCurrentEnvironmentShared ?
-            await ApiManager.Instance.guestApiClient.ReadObject2Ds(environment.id)
-            : await ApiManager.Instance.object2DApiClient.ReadObject2Ds(environment.id);
+            await ApiManager.Instance.GuestApiClient.ReadObject2Ds(environment.id)
+            : await ApiManager.Instance.Object2DApiClient.ReadObject2Ds(environment.id);
 
         switch (webRequestResponse)
         {
@@ -122,7 +122,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
 
     public async Task<string> CreateObject2D(Object2D object2D)
     {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.object2DApiClient.CreateObject2D(object2D);
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.Object2DApiClient.CreateObject2D(object2D);
 
         switch (webRequestResponse)
         {
@@ -142,7 +142,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
 
     public async Task<bool> UpdateObject2D(Object2D object2D)
     {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.object2DApiClient.UpdateObject2D(object2D);
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.Object2DApiClient.UpdateObject2D(object2D);
 
         switch (webRequestResponse)
         {
@@ -162,7 +162,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
 
     public async Task<bool> DeleteObject2D(Object2D object2D)
     {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.object2DApiClient.DeleteObject2D(object2D);
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.Object2DApiClient.DeleteObject2D(object2D);
 
         switch (webRequestResponse)
         {

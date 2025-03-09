@@ -8,32 +8,34 @@ public class EnvironmentSelectionHandler : MonoBehaviour
 {
     public static EnvironmentSelectionHandler Instance { get; private set; }
 
-    public List<Environment2D> environments;
+    private List<Environment2D> _environments = new List<Environment2D>();
     [Header("Buttons")]
-    public Transform parent;
-    public GameObject environmentButtonPrefab;
-    public List<GameObject> environmentButtons;
+    [SerializeField] private Transform _parent;
+    [SerializeField] private GameObject _environmentButtonPrefab;
+    private List<GameObject> _environmentButtons = new List<GameObject>();
 
 
     [Header("Delete Button")]
-    [SerializeField] private Button deleteButton;
-    private bool isDeletingDeletingModeEnabled = false;
-    [SerializeField] private Color deleteSelectedColor;
-    [SerializeField] private Color deleteUnselectedColor;
+    [SerializeField] private Button _deleteButton;
+    private bool _isDeletingDeletingModeEnabled = false;
+    [SerializeField] private Color _deleteSelectedColor;
+    [SerializeField] private Color _deleteUnselectedColor;
 
     [Header("Share Button")]
-    [SerializeField] private Button shareButton;
-    private bool isSharingModeEnabled = false;
-    [SerializeField] private Color shareSelectedColor;
-    [SerializeField] private Color shareUnselectedColor;
+    [SerializeField] private Button _shareButton;
+    private bool _isSharingModeEnabled = false;
+    [SerializeField] private Color _shareSelectedColor;
+    [SerializeField] private Color _shareUnselectedColor;
+
     [Header("Share Panel")]
-    [SerializeField] private GameObject sharePanel;
-    [SerializeField] private TMP_InputField shareInputField;
-    private string currentWorldId;
-    [SerializeField] private TextMeshProUGUI shareWorldText;
+    [SerializeField] private GameObject _sharePanel;
+    [SerializeField] private TMP_InputField _shareInputField;
+    private string _currentWorldId;
+    [SerializeField] private TextMeshProUGUI _shareWorldText;
+
     [Header("View Mode")]
-    [SerializeField] private TextMeshProUGUI bottomButtonText;
-    [SerializeField] private bool _isViewingShared = false;
+    [SerializeField] private TextMeshProUGUI _bottomButtonText;
+    private bool _isViewingShared = false;
 
     // Awake is called when the script instance is being loaded
     public void Awake()
@@ -45,13 +47,13 @@ public class EnvironmentSelectionHandler : MonoBehaviour
     public async void ReadSharedEnvironment2Ds()
     {
 
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.guestApiClient.ReadEnvironments();
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.GuestApiClient.ReadEnvironments();
 
         switch (webRequestResponse)
         {
             case WebRequestData<List<Environment2D>> dataResponse:
                 List<Environment2D> environment2Ds = dataResponse.Data;
-                environments = environment2Ds;
+                _environments = environment2Ds;
                 LoadWorlds();
                 break;
             case WebRequestError errorResponse:
@@ -67,13 +69,13 @@ public class EnvironmentSelectionHandler : MonoBehaviour
     public async void ReadPersonalEnvironment2Ds()
     {
 
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.environment2DApiClient.ReadEnvironment2Ds();
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.Environment2DApiClient.ReadEnvironment2Ds();
 
         switch (webRequestResponse)
         {
             case WebRequestData<List<Environment2D>> dataResponse:
                 List<Environment2D> environment2Ds = dataResponse.Data;
-                environments = environment2Ds;
+                _environments = environment2Ds;
                 LoadWorlds();
                 break;
             case WebRequestError errorResponse:
@@ -88,7 +90,7 @@ public class EnvironmentSelectionHandler : MonoBehaviour
 
     public async void DeleteEnvironment2D(string id)
     {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.environment2DApiClient.DeleteEnvironment(id);
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.Environment2DApiClient.DeleteEnvironment(id);
 
         switch (webRequestResponse)
         {
@@ -108,39 +110,39 @@ public class EnvironmentSelectionHandler : MonoBehaviour
 
     public void ToggleDeleteMode()
     {
-        if (isSharingModeEnabled)
+        if (_isSharingModeEnabled)
             ToggleShareMode();
-        isDeletingDeletingModeEnabled = !isDeletingDeletingModeEnabled;
-        deleteButton.image.color = isDeletingDeletingModeEnabled ? deleteSelectedColor : deleteUnselectedColor;
+        _isDeletingDeletingModeEnabled = !_isDeletingDeletingModeEnabled;
+        _deleteButton.image.color = _isDeletingDeletingModeEnabled ? _deleteSelectedColor : _deleteUnselectedColor;
     }
 
     public void ToggleShareMode()
     {
-        if (isDeletingDeletingModeEnabled)
+        if (_isDeletingDeletingModeEnabled)
             ToggleDeleteMode();
-        isSharingModeEnabled = !isSharingModeEnabled;
-        shareButton.image.color = isSharingModeEnabled ? shareSelectedColor : shareUnselectedColor;
-        sharePanel.SetActive(false);
+        _isSharingModeEnabled = !_isSharingModeEnabled;
+        _shareButton.image.color = _isSharingModeEnabled ? _shareSelectedColor : _shareUnselectedColor;
+        _sharePanel.SetActive(false);
     }
 
     public void SelectWorld(string worldId, GameObject gameObject)
     {
-        if (isDeletingDeletingModeEnabled)
+        if (_isDeletingDeletingModeEnabled)
         {
             DeleteEnvironment2D(worldId);
             Destroy(gameObject);
             return;
         }
 
-        if (isSharingModeEnabled)
+        if (_isSharingModeEnabled)
         {
-            sharePanel.SetActive(true);
-            currentWorldId = worldId;
-            shareWorldText.text = environments.Find(environment => environment.id == worldId).name;
+            _sharePanel.SetActive(true);
+            _currentWorldId = worldId;
+            _shareWorldText.text = _environments.Find(environment => environment.id == worldId).name;
             return;
         }
 
-        ApiManager.Instance.currentEnvironment = environments.Find(environment => environment.id == worldId);
+        ApiManager.Instance.currentEnvironment = _environments.Find(environment => environment.id == worldId);
         ApiManager.Instance.shouldEnvironmentBeLoaded = true;
         if (_isViewingShared)
             ApiManager.Instance.isCurrentEnvironmentShared = true;
@@ -149,34 +151,43 @@ public class EnvironmentSelectionHandler : MonoBehaviour
 
     public async void ShareWorld()
     {
-        sharePanel.SetActive(false);
-        string username = shareInputField.text;
-        await ApiManager.Instance.guestApiClient.ShareEnvironment(currentWorldId, username);
+        _sharePanel.SetActive(false);
+        string username = _shareInputField.text;
+        await ApiManager.Instance.GuestApiClient.ShareEnvironment(_currentWorldId, username);
     }
 
     public void ToggleDisplayMode()
     {
-        int childCount = parent.childCount;
+        int childCount = _parent.childCount;
         for (int i = childCount - 1; i >= 0; i--)
         {
-            Destroy(parent.GetChild(i).gameObject);
+            Destroy(_parent.GetChild(i).gameObject);
         }
         _isViewingShared = !_isViewingShared;
-        bottomButtonText.text = _isViewingShared ? "View My Worlds" : "View Shared Worlds";
+        _bottomButtonText.text = _isViewingShared ? "View My Worlds" : "View Shared Worlds";
         if (_isViewingShared)
         {
             ReadSharedEnvironment2Ds();
+            _deleteButton.gameObject.SetActive(false);
+            _shareButton.gameObject.SetActive(false);
+            _sharePanel.SetActive(false);
+            _isSharingModeEnabled = false;
+            _isDeletingDeletingModeEnabled = false;
+            _shareButton.image.color = _shareUnselectedColor;
+            _deleteButton.image.color = _deleteUnselectedColor;
         }
         else
         {
             ReadPersonalEnvironment2Ds();
+            _deleteButton.gameObject.SetActive(true);
+            _shareButton.gameObject.SetActive(true);
         }
     }
 
 
     private void LoadWorlds()
     {
-        foreach (Environment2D environment in environments)
+        foreach (Environment2D environment in _environments)
         {
             LoadWorldButton(environment);
         }
@@ -184,9 +195,9 @@ public class EnvironmentSelectionHandler : MonoBehaviour
 
     private void LoadWorldButton(Environment2D environment)
     {
-        GameObject environmentButton = Instantiate(environmentButtonPrefab, parent);
+        GameObject environmentButton = Instantiate(_environmentButtonPrefab, _parent);
         environmentButton.GetComponent<WorldSelectButton>().text.text = environment.name;
         environmentButton.GetComponent<WorldSelectButton>().worldId = environment.id;
-        environmentButtons.Add(environmentButton);
+        _environmentButtons.Add(environmentButton);
     }
 }

@@ -6,10 +6,10 @@ public class ApiManager : MonoBehaviour
 {
     [Header("Api's")]
     public static ApiManager Instance { get; private set; }
-    public UserApiClient userApiClient;
-    public Environment2DApiClient environment2DApiClient;
-    public Object2DApiClient object2DApiClient;
-    public GuestApiClient guestApiClient;
+    [field:SerializeField] public UserApiClient UserApiClient { get; private set; }
+    [field: SerializeField] public Environment2DApiClient Environment2DApiClient { get; private set; }
+    [field: SerializeField] public Object2DApiClient Object2DApiClient { get; private set; }
+    [field: SerializeField] public GuestApiClient GuestApiClient { get; private set; }
 
     [Header("Variables")]
     public Environment2D currentEnvironment;

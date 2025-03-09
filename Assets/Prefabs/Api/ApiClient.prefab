@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c86bd7546f1f94e9c106ea19a09157, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseUrl: https://localhost:7249
+  baseUrl: https://avansict2226737.azurewebsites.net:443
 --- !u!114 &5082269129097711349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,13 +114,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0f06ab8f877f14ab17265407ab4046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userApiClient: {fileID: 5082269129097711349}
-  environment2DApiClient: {fileID: 2890065483692187962}
-  object2DApiClient: {fileID: 4444595817058466622}
-  guestApiClient: {fileID: 6447878890434327049}
+  <UserApiClient>k__BackingField: {fileID: 5082269129097711349}
+  <Environment2DApiClient>k__BackingField: {fileID: 2890065483692187962}
+  <Object2DApiClient>k__BackingField: {fileID: 4444595817058466622}
+  <GuestApiClient>k__BackingField: {fileID: 6447878890434327049}
   currentEnvironment:
     id: 
     name: 
     maxLength: 0
     maxHeight: 0
+  isCurrentEnvironmentShared: 0
   shouldEnvironmentBeLoaded: 0

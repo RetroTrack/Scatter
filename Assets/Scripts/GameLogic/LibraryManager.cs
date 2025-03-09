@@ -15,12 +15,12 @@ namespace Scatter.Library
         [HideInInspector] public static LibraryManager Instance { get; private set; }
 
         [Header("Library UI")]
-        public GameObject contentPanel;
-        public Button[] categoryButtons;
+        [SerializeField] private GameObject _contentPanel;
+        [SerializeField] private Button[] _categoryButtons;
 
         [Header("Library Objects")]
-        public Image imageObject;
-        public LibraryCategory[] libraryCategories;
+        [SerializeField] private Image _imageObject;
+        [SerializeField] private LibraryCategory[] _libraryCategories;
 
         [Header("Library Variables")]
         [SerializeField] private int _selectedCategory = -1;
@@ -49,17 +49,20 @@ namespace Scatter.Library
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                ChangePointerMode(PointerMode.Move);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+                ChangePointerMode(PointerMode.Click);
+            }else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                ChangePointerMode(PointerMode.Rotate);
+                ChangePointerMode(PointerMode.Move);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                ChangePointerMode(PointerMode.Scale);
+                ChangePointerMode(PointerMode.Rotate);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                ChangePointerMode(PointerMode.Scale);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
                 ChangePointerMode(PointerMode.Erase);
             }
@@ -111,19 +114,19 @@ namespace Scatter.Library
         private void RefreshLibraryContent()
         {
             //Remove all objects from the content panel
-            foreach (Transform child in contentPanel.transform)
+            foreach (Transform child in _contentPanel.transform)
             {
                 Destroy(child.gameObject);
             }
             //Instantiate objects in selected category (if selected)
             if (!_selectedCategory.Equals(-1))
             {
-                InstantiateLibraryButtons(libraryCategories[_selectedCategory]);
+                InstantiateLibraryButtons(_libraryCategories[_selectedCategory]);
                 return;
             }
 
             //Instantiate objects in all categories (if none selected)
-            foreach (LibraryCategory libraryCategory in libraryCategories)
+            foreach (LibraryCategory libraryCategory in _libraryCategories)
             {
                 InstantiateLibraryButtons(libraryCategory);
             }
@@ -135,11 +138,11 @@ namespace Scatter.Library
             _selectedCategory = category;
 
             //Enable all buttons, then disable the selected one and reload the 
-            foreach (var button in categoryButtons)
+            foreach (var button in _categoryButtons)
             {
                 button.interactable = true;
             }
-            categoryButtons[_selectedCategory + 1].interactable = false;
+            _categoryButtons[_selectedCategory + 1].interactable = false;
             RefreshLibraryContent();
         }
 
@@ -148,19 +151,19 @@ namespace Scatter.Library
             //Loop through all objects in the category and create a button for them
             foreach (PlayerObject playerObject in libraryCategory.playerObjects)
             {
-                imageObject.sprite = playerObject.Sprite;
+                _imageObject.sprite = playerObject.Sprite;
 
-                GameObject newObject = Instantiate(imageObject.gameObject);
+                GameObject newObject = Instantiate(_imageObject.gameObject);
                 newObject.GetComponent<CanvasDraggable>().playerObject = playerObject;
 
-                newObject.transform.SetParent(contentPanel.transform, false);
+                newObject.transform.SetParent(_contentPanel.transform, false);
             }
         }
 
         public List<PlayerObject> GetAllObjects()
         {
             List<PlayerObject> playerObjects = new List<PlayerObject>();
-            foreach (LibraryCategory libraryCategory in libraryCategories)
+            foreach (LibraryCategory libraryCategory in _libraryCategories)
             {
                 playerObjects.AddRange(libraryCategory.playerObjects);
             }

@@ -4,7 +4,6 @@ using Scatter.Library;
 using Scatter.World;
 using UnityEngine;
 using UnityEngine.UI;
-using static Scatter.Helpers.LibraryHelper;
 
 namespace Scatter.Helpers
 {

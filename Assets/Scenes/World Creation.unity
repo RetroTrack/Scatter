@@ -1480,6 +1480,7 @@ RectTransform:
   m_Children:
   - {fileID: 4192607}
   - {fileID: 1742762296}
+  - {fileID: 792971491}
   m_Father: {fileID: 1798855042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1549,14 +1550,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 792971490}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 991405757}
   - {fileID: 1365050446}
-  m_Father: {fileID: 1798855042}
+  m_Father: {fileID: 790155532}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1625,8 +1626,8 @@ Camera:
   m_GameObject: {fileID: 859567937}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0.21960784, b: 0.6901961, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2755,7 +2756,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 790155532}
-  - {fileID: 792971491}
   m_Father: {fileID: 1813524049}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3120,13 +3120,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b6ece559bd366145a893db1b309de86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  environment2D:
+  _environment2D:
     id: 
     name: 
     maxLength: 200
     maxHeight: 100
-  heightInput: {fileID: 492780369}
-  lengthInput: {fileID: 1902198006}
+  _heightInput: {fileID: 492780369}
+  _lengthInput: {fileID: 1902198006}
 --- !u!4 &1869183079
 Transform:
   m_ObjectHideFlags: 0

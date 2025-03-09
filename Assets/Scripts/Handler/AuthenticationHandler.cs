@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class AuthenticationHandler : MonoBehaviour
 {
     private User _user = new User();
-    [SerializeField] private TMPro.TextMeshProUGUI errorText;
+    [SerializeField] private TMPro.TextMeshProUGUI _errorText;
 
     public void SetUserMail(string mail)
     {
@@ -17,13 +17,13 @@ public class AuthenticationHandler : MonoBehaviour
     }
     public void SetErrorText(string text)
     {
-        errorText.text = text;
-        errorText.gameObject.SetActive(true);
+        _errorText.text = text;
+        _errorText.gameObject.SetActive(true);
     }
 
     public async void Register()
     {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.userApiClient.Register(_user);
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.UserApiClient.Register(_user);
 
         switch (webRequestResponse)
         {
@@ -40,7 +40,7 @@ public class AuthenticationHandler : MonoBehaviour
 
     public async void Login()
     {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.userApiClient.Login(_user);
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.UserApiClient.Login(_user);
 
         switch (webRequestResponse)
         {

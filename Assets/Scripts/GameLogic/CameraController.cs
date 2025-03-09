@@ -24,7 +24,7 @@ namespace Scatter.World
 
 
 
-        public Vector3 _startMousePosition;
+        private Vector3 _startMousePosition;
         private bool _isDragging = false;
 
         private Camera _camera;

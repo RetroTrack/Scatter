@@ -4,65 +4,65 @@ using UnityEngine;
 
 public class EnvironmentCreationHandler : MonoBehaviour
 {
-    public Environment2D environment2D;
-    public TMP_InputField heightInput;
-    public TMP_InputField lengthInput;
+    [SerializeField] private Environment2D _environment2D;
+    [SerializeField] private TMP_InputField _heightInput;
+    [SerializeField] private TMP_InputField _lengthInput;
 
     public void SetEnvironmentName(string name)
     {
-        environment2D.name = name;
+        _environment2D.name = name;
     }
     public void SetEnvironmentHeight(string height)
     {
         if (string.IsNullOrWhiteSpace(height))
         {
-            heightInput.text = "0";
-            environment2D.maxHeight = 10;
+            _heightInput.text = "0";
+            _environment2D.maxHeight = 10;
             return;
         }
 
-        environment2D.maxHeight = int.Parse(height);
+        _environment2D.maxHeight = int.Parse(height);
 
-        if (environment2D.maxHeight > 100)
+        if (_environment2D.maxHeight > 100)
         {
-            environment2D.maxHeight = 100;
-            heightInput.text = "100";
+            _environment2D.maxHeight = 100;
+            _heightInput.text = "100";
         }
-        else if (environment2D.maxHeight < 10)
+        else if (_environment2D.maxHeight < 10)
         {
-            environment2D.maxHeight = 10;
+            _environment2D.maxHeight = 10;
         }
     }
     public void SetEnvironmentLength(string length)
     {
         if (string.IsNullOrWhiteSpace(length))
         {
-            lengthInput.text = "0";
-            environment2D.maxHeight = 20;
+            _lengthInput.text = "0";
+            _environment2D.maxHeight = 20;
             return;
         }
 
-        environment2D.maxLength = int.Parse(length);
+        _environment2D.maxLength = int.Parse(length);
 
-        if (environment2D.maxLength > 200)
+        if (_environment2D.maxLength > 200)
         {
-            environment2D.maxLength = 200;
-            lengthInput.text = "200";
+            _environment2D.maxLength = 200;
+            _lengthInput.text = "200";
         }
-        else if (environment2D.maxLength < 20)
+        else if (_environment2D.maxLength < 20)
         {
-            environment2D.maxLength = 20;
+            _environment2D.maxLength = 20;
         }
     }
 
     public async void CreateEnvironment2D()
     {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.environment2DApiClient.CreateEnvironment(environment2D);
+        IWebRequestReponse webRequestResponse = await ApiManager.Instance.Environment2DApiClient.CreateEnvironment(_environment2D);
 
         switch (webRequestResponse)
         {
             case WebRequestData<Environment2D> dataResponse:
-                environment2D.id = dataResponse.Data.id;
+                _environment2D.id = dataResponse.Data.id;
                 SceneLoader.LoadScene("Worlds");
                 break;
             case WebRequestError errorResponse:
