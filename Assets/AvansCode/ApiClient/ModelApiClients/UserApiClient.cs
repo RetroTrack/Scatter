@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UserApiClient : MonoBehaviour
@@ -21,6 +22,17 @@ public class UserApiClient : MonoBehaviour
         return ProcessLoginResponse(response);
     }
 
+    public async Awaitable<IWebRequestReponse> RefreshToken(string refreshToken)
+    {
+        string route = "/account/refresh";
+        AuthRefreshToken token = new AuthRefreshToken(refreshToken);
+        string data = JsonUtility.ToJson(token);
+
+        IWebRequestReponse response = await webClient.SendPostRequest(route, data);
+        return ProcessLoginResponse(response);
+    }
+
+
     private IWebRequestReponse ProcessLoginResponse(IWebRequestReponse webRequestResponse)
     {
         switch (webRequestResponse)
@@ -29,11 +41,13 @@ public class UserApiClient : MonoBehaviour
                 Debug.Log("Response data raw: " + data.Data);
                 string token = JsonHelper.ExtractToken(data.Data);
                 webClient.SetToken(token);
+                ApiManager.Instance.SetRefreshToken(JsonHelper.ExtractRefreshToken(data.Data));
                 return new WebRequestData<string>("Succes");
             default:
                 return webRequestResponse;
         }
     }
 
+    
 }
 

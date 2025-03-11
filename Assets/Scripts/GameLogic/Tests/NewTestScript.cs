@@ -21,10 +21,4 @@ public class NewTestScript
         // Use yield to skip a frame.
         yield return null;
     }
-
-
-    public void TestZooi()
-    {
-
-    }
 }

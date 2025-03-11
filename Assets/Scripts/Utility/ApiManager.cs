@@ -16,6 +16,9 @@ public class ApiManager : MonoBehaviour
     public bool isCurrentEnvironmentShared = false;
     public bool shouldEnvironmentBeLoaded = false;
 
+    private string _refreshToken;
+    private DateTime _timeLastRefreshToken;
+
     // Awake is called when the script instance is being loaded
     private void Awake()
     {
@@ -27,6 +30,24 @@ public class ApiManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public void SetRefreshToken(string refreshToken)
+    {
+        _refreshToken = refreshToken;
+        _timeLastRefreshToken = DateTime.Now;
+    }
+
+    public void Update()
+    {
+        if (_refreshToken != null && _timeLastRefreshToken != null)
+        {
+            if (DateTime.Now.Subtract(_timeLastRefreshToken).TotalMinutes >= 59)
+            {
+                _ = UserApiClient.RefreshToken(_refreshToken);
+                _timeLastRefreshToken = DateTime.Now;
+            }
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)

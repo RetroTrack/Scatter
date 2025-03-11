@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Scatter.Helpers;
 using Scatter.World;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnvironmentObjectHandler : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
     [SerializeField] private List<string> _deletedObjects = new();
     [SerializeField] private GameObject _rightPanel;
     [SerializeField] private GameObject _saveButton;
+    [SerializeField] private Button _exitButton;
 
     public void Awake()
     {
@@ -47,6 +49,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
 
     public async void SaveObjectsInEnvironment()
     {
+        _exitButton.enabled = false;
         //Save all objects in the environment
         foreach (PlayerObject playerObject in loadedPlayerObjects)
         {
@@ -73,6 +76,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
             await DeleteObject2D(object2D);
         }
         _deletedObjects.Clear();
+        _exitButton.enabled = true;
     }
 
     public void AddDestroyed(PlayerObject playerObject)

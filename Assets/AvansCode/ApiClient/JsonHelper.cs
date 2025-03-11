@@ -16,6 +16,11 @@ public static class JsonHelper
         Token token = JsonUtility.FromJson<Token>(data);
         return token.accessToken;
     }
+    public static string ExtractRefreshToken(string data)
+    {
+        Token token = JsonUtility.FromJson<Token>(data);
+        return token.refreshToken;
+    }
 }
 
 [Serializable]
