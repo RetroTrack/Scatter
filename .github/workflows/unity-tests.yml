@@ -1,0 +1,32 @@
+name: Run Unity Tests and Trigger WebApi Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Unity Project
+        uses: actions/checkout@v4
+
+      - name: Set up Unity
+        uses: game-ci/setup-unity@v2
+        with:
+          unityVersion: 6000.0.36f1
+
+      - name: Run Unity Tests
+        id: unity_tests
+        run: |
+          unity-editor -batchmode -nographics -projectPath . -runTests -testPlatform all || exit 1
+
+      - name: Trigger WebApi Deployment
+        if: success()
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.WEBAPI_TRIGGER_PAT }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/RetroTrack/2DGraphicsLU2/dispatches \
+               -d '{"event_type": "unity-tests-passed"}'
