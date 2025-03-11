@@ -11,22 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Unity Project
-        uses: actions/checkout@v4
-
-      - name: Set up Unity
-        uses: game-ci/setup-unity@v2
-        with:
-          unityVersion: 6000.0.36f1
+        uses: actions/checkout@v4.3.1
 
       - name: Run Unity Tests
-        id: unity_tests
-        run: |
-          unity-editor -batchmode -nographics -projectPath . -runTests -testPlatform all || exit 1
+        uses: game-ci/unity-test-runner@v4.3.1
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: .  
+          unityVersion: 6000.0.36f1
+          testMode: all 
 
       - name: Trigger WebApi Deployment
         if: success()
         run: |
-          curl -X POST -H "Authorization: token ${{ secrets.WEBAPI_TRIGGER_PAT }}" \
+          curl -X POST -H "Authorization: Bearer ${{ secrets.WEBAPI_TRIGGER_PAT }}" \
                -H "Accept: application/vnd.github.v3+json" \
                https://api.github.com/repos/RetroTrack/2DGraphicsLU2/dispatches \
                -d '{"event_type": "unity-tests-passed"}'
