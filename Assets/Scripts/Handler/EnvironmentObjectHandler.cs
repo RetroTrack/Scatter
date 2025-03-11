@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Scatter.Api;
+using Scatter.Api.Models;
+using Scatter.Api.Responses;
 using Scatter.Helpers;
 using Scatter.World;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+namespace Scatter.Handler{
 public class EnvironmentObjectHandler : MonoBehaviour
 {
     public static EnvironmentObjectHandler Instance { get; private set; }
@@ -44,12 +49,13 @@ public class EnvironmentObjectHandler : MonoBehaviour
             return;
         }
         //Convert objects to player objects
-        ObjectHelper.ConvertObject2DsToPlayerObjects(object2Ds);
+        if(SceneManager.GetActiveScene().name == "Game")
+                ObjectHelper.ConvertObject2DsToPlayerObjects(object2Ds);
     }
 
     public async void SaveObjectsInEnvironment()
     {
-        _exitButton.enabled = false;
+        _exitButton.interactable = false;
         //Save all objects in the environment
         foreach (PlayerObject playerObject in loadedPlayerObjects)
         {
@@ -76,7 +82,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
             await DeleteObject2D(object2D);
         }
         _deletedObjects.Clear();
-        _exitButton.enabled = true;
+        _exitButton.interactable = true;
     }
 
     public void AddDestroyed(PlayerObject playerObject)
@@ -104,7 +110,7 @@ public class EnvironmentObjectHandler : MonoBehaviour
             Debug.Log("Environment id is null or empty!");
             return null;
         }
-        IWebRequestReponse webRequestResponse = ApiManager.Instance.isCurrentEnvironmentShared ?
+        IWebRequestReponse webRequestResponse = ApiManager.Instance.IsCurrentEnvironmentShared ?
             await ApiManager.Instance.GuestApiClient.ReadObject2Ds(environment.id)
             : await ApiManager.Instance.Object2DApiClient.ReadObject2Ds(environment.id);
 
@@ -186,9 +192,10 @@ public class EnvironmentObjectHandler : MonoBehaviour
     #endregion
 }
 
-[Serializable]
-public struct Prefab2D
-{
-    public string id;
-    public GameObject prefab;
+    [Serializable]
+    public struct Prefab2D
+    {
+        public string id;
+        public GameObject prefab;
+    }
 }

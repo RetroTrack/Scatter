@@ -1,77 +1,94 @@
 using System;
+using Scatter.Api;
+using Scatter.Api.Models;
+using Scatter.Api.Responses;
+using Scatter.Helpers;
 using TMPro;
 using UnityEngine;
 
-public class EnvironmentCreationHandler : MonoBehaviour
+namespace Scatter.Handler
 {
-    [SerializeField] private Environment2D _environment2D;
-    [SerializeField] private TMP_InputField _heightInput;
-    [SerializeField] private TMP_InputField _lengthInput;
-
-    public void SetEnvironmentName(string name)
+    public class EnvironmentCreationHandler : MonoBehaviour
     {
-        _environment2D.name = name;
-    }
-    public void SetEnvironmentHeight(string height)
-    {
-        if (string.IsNullOrWhiteSpace(height))
+        [field: SerializeField] public Environment2D Environment2D { get; private set; }
+        [SerializeField] private TMP_InputField _heightInput;
+        [SerializeField] private TMP_InputField _lengthInput;
+        [SerializeField] private TMPro.TextMeshProUGUI _errorText;
+
+        public void SetErrorText(string text)
         {
-            _heightInput.text = "0";
-            _environment2D.maxHeight = 10;
-            return;
+            _errorText.text = text;
+            _errorText.gameObject.SetActive(true);
         }
 
-        _environment2D.maxHeight = int.Parse(height);
-
-        if (_environment2D.maxHeight > 100)
+        public void SetEnvironmentName(string name)
         {
-            _environment2D.maxHeight = 100;
-            _heightInput.text = "100";
+            Environment2D.name = name;
         }
-        else if (_environment2D.maxHeight < 10)
+        public void SetEnvironmentHeight(string height)
         {
-            _environment2D.maxHeight = 10;
+            if (string.IsNullOrWhiteSpace(height))
+            {
+                if(_heightInput != null)
+                    _heightInput.text = "0";
+                Environment2D.maxHeight = 10;
+                return;
+            }
+
+            Environment2D.maxHeight = int.Parse(height);
+
+            if (Environment2D.maxHeight > 100)
+            {
+                Environment2D.maxHeight = 100;
+                if (_heightInput != null)
+                    _heightInput.text = "100";
+            }
+            else if (Environment2D.maxHeight < 10)
+            {
+                Environment2D.maxHeight = 10;
+            }
         }
-    }
-    public void SetEnvironmentLength(string length)
-    {
-        if (string.IsNullOrWhiteSpace(length))
+        public void SetEnvironmentLength(string length)
         {
-            _lengthInput.text = "0";
-            _environment2D.maxHeight = 20;
-            return;
+            if (string.IsNullOrWhiteSpace(length))
+            {
+                if (_heightInput != null)
+                    _lengthInput.text = "0";
+                Environment2D.maxHeight = 20;
+                return;
+            }
+
+            Environment2D.maxLength = int.Parse(length);
+
+            if (Environment2D.maxLength > 200)
+            {
+                Environment2D.maxLength = 200;
+                if (_heightInput != null)
+                    _lengthInput.text = "200";
+            }
+            else if (Environment2D.maxLength < 20)
+            {
+                Environment2D.maxLength = 20;
+            }
         }
 
-        _environment2D.maxLength = int.Parse(length);
-
-        if (_environment2D.maxLength > 200)
+        public async void CreateEnvironment2D()
         {
-            _environment2D.maxLength = 200;
-            _lengthInput.text = "200";
-        }
-        else if (_environment2D.maxLength < 20)
-        {
-            _environment2D.maxLength = 20;
-        }
-    }
+            IWebRequestReponse webRequestResponse = await ApiManager.Instance.Environment2DApiClient.CreateEnvironment(Environment2D);
 
-    public async void CreateEnvironment2D()
-    {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.Environment2DApiClient.CreateEnvironment(_environment2D);
-
-        switch (webRequestResponse)
-        {
-            case WebRequestData<Environment2D> dataResponse:
-                _environment2D.id = dataResponse.Data.id;
-                SceneLoader.LoadScene("Worlds");
-                break;
-            case WebRequestError errorResponse:
-                string errorMessage = errorResponse.ErrorMessage;
-                Debug.Log("Create environment2D error: " + errorMessage);
-                // TODO: Handle error scenario. Show the errormessage to the user.
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+            switch (webRequestResponse)
+            {
+                case WebRequestData<Environment2D> dataResponse:
+                    Environment2D.id = dataResponse.Data.id;
+                    SceneLoader.LoadScene("Worlds");
+                    break;
+                case WebRequestError errorResponse:
+                    string errorMessage = errorResponse.ErrorMessage;
+                    SetErrorText("Couldn't create world, are you sure that the values are correct and the name is original?");
+                    break;
+                default:
+                    throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+            }
         }
     }
 }

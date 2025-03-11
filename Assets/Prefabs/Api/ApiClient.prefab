@@ -59,7 +59,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 106717169078542437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fed4f7f0e67c302469248224d4bac5a3, type: 3}
+  m_Script: {fileID: 11500000, guid: f485e5ba3a25b8046a02ff35b27f412c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   webClient: {fileID: 4360362040482848337}
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 106717169078542437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 897e0cc10f8521f49a93fed71f583bfd, type: 3}
+  m_Script: {fileID: 11500000, guid: 205e1c9af5dc0194ab8ae5c738327e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   webClient: {fileID: 4360362040482848337}
@@ -85,7 +85,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 106717169078542437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d38452f633bae3648b55631c65e9eef2, type: 3}
+  m_Script: {fileID: 11500000, guid: f38f13decbc603d4e9affadd01f504b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   webClient: {fileID: 4360362040482848337}
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 106717169078542437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8fe48ab71c762941a328d7116ba9b78, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f797b17395ad434ba194bcc6d7f897f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   webClient: {fileID: 4360362040482848337}
@@ -118,10 +118,3 @@ MonoBehaviour:
   <Environment2DApiClient>k__BackingField: {fileID: 2890065483692187962}
   <Object2DApiClient>k__BackingField: {fileID: 4444595817058466622}
   <GuestApiClient>k__BackingField: {fileID: 6447878890434327049}
-  currentEnvironment:
-    id: 
-    name: 
-    maxLength: 0
-    maxHeight: 0
-  isCurrentEnvironmentShared: 0
-  shouldEnvironmentBeLoaded: 0

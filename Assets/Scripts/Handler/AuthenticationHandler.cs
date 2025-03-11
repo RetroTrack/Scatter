@@ -1,57 +1,69 @@
 using System;
+using Scatter.Api;
+using Scatter.Api.Models;
+using Scatter.Api.Responses;
+using Scatter.Helpers;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class AuthenticationHandler : MonoBehaviour
+namespace Scatter.Handler
 {
-    private User _user = new User();
-    [SerializeField] private TMPro.TextMeshProUGUI _errorText;
+    public class AuthenticationHandler : MonoBehaviour
+    {
+        private User _user = new User();
+        [SerializeField] private TMPro.TextMeshProUGUI _errorText;
+        [SerializeField] private Button _confirmButton;
 
-    public void SetUserMail(string mail)
-    {
-        _user.Email = mail;
-    }
-    public void SetUserPassword(string password)
-    {
-        _user.Password = password;
-    }
-    public void SetErrorText(string text)
-    {
-        _errorText.text = text;
-        _errorText.gameObject.SetActive(true);
-    }
-
-    public async void Register()
-    {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.UserApiClient.Register(_user);
-
-        switch (webRequestResponse)
+        public void SetUserMail(string mail)
         {
-            case WebRequestData<string>:
-                SceneLoader.LoadScene("Login");
-                break;
-            case WebRequestError:
-                SetErrorText("Email address already exists!");
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+            _user.Email = mail;
         }
-    }
-
-    public async void Login()
-    {
-        IWebRequestReponse webRequestResponse = await ApiManager.Instance.UserApiClient.Login(_user);
-
-        switch (webRequestResponse)
+        public void SetUserPassword(string password)
         {
-            case WebRequestData<string>:
-                SceneLoader.LoadScene("MainMenu");
-                break;
-            case WebRequestError:
-                SetErrorText("Email or password incorrect!");
-                break;
-            default:
-                throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+            _user.Password = password;
+        }
+        public void SetErrorText(string text)
+        {
+            _errorText.text = text;
+            _errorText.gameObject.SetActive(true);
+        }
+
+        public async void Register()
+        {
+            _confirmButton.interactable = false;
+            IWebRequestReponse webRequestResponse = await ApiManager.Instance.UserApiClient.Register(_user);
+
+            switch (webRequestResponse)
+            {
+                case WebRequestData<string>:
+                    SceneLoader.LoadScene("Login");
+                    break;
+                case WebRequestError:
+                    SetErrorText("Email address already exists!");
+                    _confirmButton.interactable = true;
+                    break;
+                default:
+                    throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+            }
+        }
+
+        public async void Login()
+        {
+            _confirmButton.interactable = false;
+            IWebRequestReponse webRequestResponse = await ApiManager.Instance.UserApiClient.Login(_user);
+
+            switch (webRequestResponse)
+            {
+                case WebRequestData<string>:
+                    SceneLoader.LoadScene("MainMenu");
+                    break;
+                case WebRequestError:
+                    SetErrorText("Email or password incorrect!");
+                    _confirmButton.interactable = true;
+                    break;
+                default:
+                    throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
+            }
         }
     }
 }
