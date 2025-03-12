@@ -3260,8 +3260,8 @@ MonoBehaviour:
   <Environment2D>k__BackingField:
     id: 
     name: 
-    maxLength: 0
-    maxHeight: 0
+    maxLength: 200
+    maxHeight: 100
   _heightInput: {fileID: 492780369}
   _lengthInput: {fileID: 1902198006}
   _errorText: {fileID: 216812439}

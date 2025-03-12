@@ -13,6 +13,7 @@ namespace Scatter.Canvas
         [SerializeField] private GameObject _canvasPrefab;
         private Image _image;
         private GameObject _dragInstance;
+        private bool _isDragging;
 
 
         // Start is called before the first frame update
@@ -24,6 +25,9 @@ namespace Scatter.Canvas
         #region Dragging
         public void OnBeginDrag()
         {
+            if (LibraryManager.Instance.IsObjectSelected)
+                return;
+            _isDragging = true;
             _image.enabled = false;
             LibraryManager.Instance.ChangePointerMode(PointerMode.Move);
             CreateDragInstance();
@@ -31,7 +35,7 @@ namespace Scatter.Canvas
 
         public void OnDrag()
         {
-            if (_dragInstance != null)
+            if (_dragInstance != null && _isDragging)
             {
                 _dragInstance.transform.position = Input.mousePosition;
             }
@@ -39,6 +43,9 @@ namespace Scatter.Canvas
 
         public void OnEndDrag()
         {
+            if (!_isDragging)
+                return;
+            _isDragging = false;
             FinalizeDraggable();
             _image.enabled = true;
         }
@@ -59,6 +66,7 @@ namespace Scatter.Canvas
 
         private void FinalizeDraggable()
         {
+            // Place the object if the pointer is not over a UI element
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 LibraryManager.Instance.InstantiatePlayerObject(playerObject);

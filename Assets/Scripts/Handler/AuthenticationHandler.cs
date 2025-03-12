@@ -14,6 +14,7 @@ namespace Scatter.Handler
         [SerializeField] private TMPro.TextMeshProUGUI _errorText;
         [SerializeField] private Button _confirmButton;
 
+        #region Variable Setters
         public void SetUserMail(string mail)
         {
             _user.Email = mail;
@@ -27,6 +28,9 @@ namespace Scatter.Handler
             _errorText.text = text;
             _errorText.gameObject.SetActive(true);
         }
+        #endregion
+
+        #region WebRequests
 
         public async void Register()
         {
@@ -65,5 +69,6 @@ namespace Scatter.Handler
                     throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
             }
         }
+        #endregion
     }
 }

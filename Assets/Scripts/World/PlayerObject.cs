@@ -31,6 +31,7 @@ namespace Scatter.World
 
             HandleObjectInteraction();
         }
+        #region Context Menu Options
 
         [ContextMenu("Player Object/Prefab Id from name")]
         public void GetPrefabId()
@@ -43,7 +44,7 @@ namespace Scatter.World
         {
             Sprite = GetComponent<SpriteRenderer>().sprite;
         }
-
+        #endregion
 
         #region Object Manipulation
 
@@ -177,7 +178,9 @@ namespace Scatter.World
         public void OnPointerModeChange(object sender, EventArgs e)
         {
             //If the object is selected, it should be deselected and the color should be reset
-            if (LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Erase))
+            if (LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Erase)
+                || LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Place)
+                || LibraryManager.Instance.currentPointerMode.Equals(PointerMode.Click))
             {
                 _isSelected = false;
                 _isOverObject = false;

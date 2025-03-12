@@ -1486,7 +1486,7 @@ MonoBehaviour:
   _shareUnselectedColor: {r: 0, g: 0, b: 0, a: 0.78431374}
   _sharePanel: {fileID: 869087922}
   _shareInputField: {fileID: 431927938}
-  _shareWorldText: {fileID: 725780968}
+  _shareWorldText: {fileID: 1155104297}
   _shareInfoText: {fileID: 1619798268}
   _bottomButtonText: {fileID: 1663882633}
 --- !u!1 &778704059

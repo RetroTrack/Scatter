@@ -45,6 +45,7 @@ namespace Scatter.Api
 
         public void Update()
         {
+            // Auto refresh token every 59 minutes
             if (_refreshToken != null && _timeLastRefreshToken != null)
             {
                 if (DateTime.Now.Subtract(_timeLastRefreshToken).TotalMinutes >= 59)
@@ -57,6 +58,7 @@ namespace Scatter.Api
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
+            // Load environment objects in the game scene
             if (scene.name.Equals("Game") && CurrentEnvironment != null && ShouldEnvironmentBeLoaded)
             {
                 EnvironmentObjectHandler.Instance.SetEnvironment(CurrentEnvironment);

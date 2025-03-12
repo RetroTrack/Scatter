@@ -55,6 +55,8 @@ namespace Scatter.Handler
             ApiManager.Instance.IsCurrentEnvironmentShared = false;
         }
 
+        #region Info
+
         public void SetSharedInfoText(string text)
         {
             _shareInfoText.text = text;
@@ -70,7 +72,9 @@ namespace Scatter.Handler
             _worldInfoText.text = text;
             _worldInfoText.gameObject.SetActive(visible);
         }
+        #endregion
 
+        #region Web Requests
         public async void ReadSharedEnvironment2Ds()
         {
             SetWorldInfoText(false);
@@ -142,7 +146,9 @@ namespace Scatter.Handler
                     throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
             }
         }
+        #endregion
 
+        #region Toggle Modes
         public void ToggleDeleteMode()
         {
             if (_isSharingModeEnabled)
@@ -160,6 +166,37 @@ namespace Scatter.Handler
             _sharePanel.SetActive(false);
         }
 
+        public void ToggleDisplayMode()
+        {
+            int childCount = _parent.childCount;
+            for (int i = childCount - 1; i >= 0; i--)
+            {
+                Destroy(_parent.GetChild(i).gameObject);
+            }
+            _isViewingShared = !_isViewingShared;
+            _bottomButtonText.text = _isViewingShared ? "View My Worlds" : "View Shared Worlds";
+            if (_isViewingShared)
+            {
+                ReadSharedEnvironment2Ds();
+                _deleteButton.gameObject.SetActive(false);
+                _shareButton.gameObject.SetActive(false);
+                _sharePanel.SetActive(false);
+                _isSharingModeEnabled = false;
+                _isDeletingDeletingModeEnabled = false;
+                _shareButton.image.color = _shareUnselectedColor;
+                _deleteButton.image.color = _deleteUnselectedColor;
+            }
+            else
+            {
+                ReadPersonalEnvironment2Ds();
+                _deleteButton.gameObject.SetActive(true);
+                _shareButton.gameObject.SetActive(true);
+            }
+        }
+
+        #endregion
+
+        #region World Management
         public virtual void SelectWorld(string worldId, GameObject gameObject)
         {
             if (_isDeletingDeletingModeEnabled)
@@ -196,35 +233,6 @@ namespace Scatter.Handler
             SetSharedInfoText("World shared with " + username + "!");
         }
 
-        public void ToggleDisplayMode()
-        {
-            int childCount = _parent.childCount;
-            for (int i = childCount - 1; i >= 0; i--)
-            {
-                Destroy(_parent.GetChild(i).gameObject);
-            }
-            _isViewingShared = !_isViewingShared;
-            _bottomButtonText.text = _isViewingShared ? "View My Worlds" : "View Shared Worlds";
-            if (_isViewingShared)
-            {
-                ReadSharedEnvironment2Ds();
-                _deleteButton.gameObject.SetActive(false);
-                _shareButton.gameObject.SetActive(false);
-                _sharePanel.SetActive(false);
-                _isSharingModeEnabled = false;
-                _isDeletingDeletingModeEnabled = false;
-                _shareButton.image.color = _shareUnselectedColor;
-                _deleteButton.image.color = _deleteUnselectedColor;
-            }
-            else
-            {
-                ReadPersonalEnvironment2Ds();
-                _deleteButton.gameObject.SetActive(true);
-                _shareButton.gameObject.SetActive(true);
-            }
-        }
-
-
         private void LoadWorlds()
         {
             foreach (Environment2D environment in _environments)
@@ -240,5 +248,6 @@ namespace Scatter.Handler
             environmentButton.GetComponent<WorldSelectButton>().worldId = environment.id;
             _environmentButtons.Add(environmentButton);
         }
+        #endregion
     }
 }

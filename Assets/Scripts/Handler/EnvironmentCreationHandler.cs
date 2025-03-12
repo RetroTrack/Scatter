@@ -15,6 +15,7 @@ namespace Scatter.Handler
         [SerializeField] private TMP_InputField _lengthInput;
         [SerializeField] private TMPro.TextMeshProUGUI _errorText;
 
+        #region Variable Setters
         public void SetErrorText(string text)
         {
             _errorText.text = text;
@@ -71,7 +72,9 @@ namespace Scatter.Handler
                 Environment2D.maxLength = 20;
             }
         }
+        #endregion
 
+        #region WebRequests
         public async void CreateEnvironment2D()
         {
             IWebRequestReponse webRequestResponse = await ApiManager.Instance.Environment2DApiClient.CreateEnvironment(Environment2D);
@@ -90,5 +93,6 @@ namespace Scatter.Handler
                     throw new NotImplementedException("No implementation for webRequestResponse of class: " + webRequestResponse.GetType());
             }
         }
+        #endregion
     }
 }

@@ -116,9 +116,6 @@ namespace Scatter.Library
 
         #region Category Management
 
-
-
-
         private void RefreshLibraryContent()
         {
             //Remove all objects from the content panel

@@ -21,26 +21,26 @@ namespace Scatter.Canvas
 
         private void HideLibraryPanel()
         {
-            //Animate panel to default position, then rotate the arrow
+            // Animate panel to default position, then rotate the arrow
             Sequence sequence = DOTween.Sequence();
             sequence.Insert(0, _panelParent.DOAnchorPosX(0, 0.5f));
             if(_shouldAnimateButton)
                 sequence.Insert(0, _buttonImage.DORotate(new Vector3(0, 180, 0), 0.2f));
 
-            //Turn off panel rendering after animation is complete
+            // Turn off panel rendering after animation is complete
             sequence.onComplete += () => _panel.SetActive(false);
             _isHidden = true;
         }
 
         private void RevealLibraryPanel()
         {
-            //Animate panel to offset position, then rotate the arrow
+            // Animate panel to offset position, then rotate the arrow
             Sequence sequence = DOTween.Sequence();
             sequence.Insert(0, _panelParent.DOAnchorPosX(_XOffset, 0.5f));
             if(_shouldAnimateButton)
                 sequence.Insert(0, _buttonImage.DORotate(new Vector3(0, 0, 0), 0.2f));
 
-            //Turn on panel rendering
+            // Turn on panel rendering
             _panel.SetActive(true);
             _isHidden = false;
         }
