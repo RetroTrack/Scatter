@@ -25,7 +25,7 @@ namespace Scatter.Library
 
         [Header("Library Variables")]
         [SerializeField] private int _selectedCategory = -1;
-        public bool IsObjectSelected { get; set; } = false;
+        [field:SerializeField] public bool IsObjectSelected { get; set; } = false;
 
         [Header("Mode Variables")]
         public PointerMode currentPointerMode = PointerMode.Click;

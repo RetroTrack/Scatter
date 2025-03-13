@@ -99,6 +99,7 @@ namespace Scatter.World
             if (Input.GetMouseButtonDown(0) && !_isOverObject)
             {
                 _isSelected = false;
+                LibraryManager.Instance.IsObjectSelected = false;
             }
         }
 
@@ -109,6 +110,7 @@ namespace Scatter.World
             if (Input.GetMouseButtonDown(0) && !_isOverObject)
             {
                 _isSelected = false;
+                LibraryManager.Instance.IsObjectSelected = false;
             }
         }
         #endregion
